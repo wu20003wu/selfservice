@@ -1,1 +1,5 @@
-venv
+# IDE-spezifische Dateien
+.idea/
+
+# Betriebssystem-spezifische Dateien
+.DS_Store

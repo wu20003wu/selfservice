@@ -1,0 +1,16 @@
+.venv
+
+# Byte-Kompilierte / Optimierte / DLL-Dateien
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+site-packages/
+
+# later in production 
+# instance/
+
+# Sensible Informationen
+# config.py
+# secrets.json
