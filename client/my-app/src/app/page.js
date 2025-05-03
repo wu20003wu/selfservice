@@ -9,10 +9,12 @@ export default function Home() {
   const [newTask, setNewTask] = useState({
     title: '',
     description: '',
-    status: 'open'
+    status_id: 1
   });
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [typeOptions, setTypeOptions] = useState([]);
 
   // useEffect, um beim Laden der Seite die API anzufragen
   useEffect(() => {
@@ -37,6 +39,36 @@ export default function Home() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        // Status und Types laden
+        const [statusRes, typesRes] = await Promise.all([
+          fetch('http://localhost:5000/api/statuses'),
+          fetch('http://localhost:5000/api/types')
+        ]);
+        
+        const statusData = await statusRes.json();
+        const typesData = await typesRes.json();
+
+        // Finde "open" Status ID
+        const openStatus = statusData.find(s => s.name.toLowerCase() === 'open');
+        
+        setStatusOptions(statusData);
+        setTypeOptions(typesData);
+        setNewTask(prev => ({
+          ...prev,
+          status_id: openStatus?.id || 1,
+          type_id: 1 // Default Type
+        }));
+
+      } catch (error) {
+        console.error('Fehler beim Laden:', error);
+      }
+    };
+    fetchInitialData();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -49,11 +81,18 @@ export default function Home() {
       });
       
       if (response.ok) {
-        setShowModal(false);
-        // Daten neu laden
-        const result = await fetch('http://localhost:5000/api/tasks');
-        const newData = await result.json();
-        setData(newData.tasks || []);
+        // Formular komplett zurücksetzen
+        setNewTask({
+          title: '',
+          description: '',
+          status_id: statusOptions.find(s => s.name === 'open')?.id || 1,
+          type_id: typeOptions[0]?.id || 1
+        });
+
+        // Daten aktualisieren
+        const createdTask = await response.json();
+        setData(prev => [...prev, createdTask]);
+        
       }
     } catch (error) {
       console.error('Error creating task:', error);
@@ -104,7 +143,7 @@ export default function Home() {
         {data && (
           <div className="w-full bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800">Aufgaben Übersicht</h2>
+              <h2 className="text-2xl font-semibold text-gray-800">Tickets Overview</h2>
               <span className="text-sm text-gray-500">{data.length} Aufgaben gesamt</span>
             </div>
             
@@ -115,6 +154,7 @@ export default function Home() {
                     <th className="px-4 py-3 font-medium">Titel</th>
                     <th className="px-4 py-3 font-medium">Beschreibung</th>
                     <th className="px-4 py-3 font-medium">Status</th>
+                    <th className="px-4 py-3 font-medium">Typ</th>
                     <th className="px-4 py-3 font-medium">Erstellt am</th>
                     <th className="px-4 py-3 font-medium text-right">Aktionen</th>
                   </tr>
@@ -134,6 +174,9 @@ export default function Home() {
                         }`}>
                           {task.status}
                         </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        {task.type}
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
                         {new Date(task.created_at).toLocaleDateString('de-DE', {
@@ -186,14 +229,22 @@ export default function Home() {
                       />
                     </td>
                     <td className="px-4 py-2">
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded bg-gray-100"
+                        value={statusOptions.find(s => s.id === newTask.status_id)?.name || 'Open'}
+                        readOnly
+                      />
+                    </td>
+                    <td className="px-4 py-2">
                       <select
                         className="w-full p-2 border rounded bg-transparent"
-                        value={newTask.status}
-                        onChange={(e) => setNewTask({...newTask, status: e.target.value})}
+                        value={newTask.type_id}
+                        onChange={(e) => setNewTask({...newTask, type_id: parseInt(e.target.value)})}
                       >
-                        <option value="open">Offen</option>
-                        <option value="in progress">In Bearbeitung</option>
-                        <option value="done">Erledigt</option>
+                        {typeOptions.map(type => (
+                          <option key={type.id} value={type.id}>{type.name}</option>
+                        ))}
                       </select>
                     </td>
                     <td className="px-4 py-3 text-sm text-gray-500">
@@ -243,12 +294,14 @@ export default function Home() {
                 <label className="block mb-2">Status</label>
                 <select
                   className="w-full p-2 border rounded"
-                  value={editingTask.status}
-                  onChange={(e) => setEditingTask({...editingTask, status: e.target.value})}
+                  value={editingTask?.status_id}
+                  onChange={(e) => setEditingTask({...editingTask, status_id: parseInt(e.target.value)})}
                 >
-                  <option value="open">Offen</option>
-                  <option value="in progress">In Bearbeitung</option>
-                  <option value="done">Erledigt</option>
+                  {statusOptions.map(status => (
+                    <option key={status.id} value={status.id}>
+                      {status.name}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="flex justify-end gap-2">
