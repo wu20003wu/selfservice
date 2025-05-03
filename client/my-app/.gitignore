@@ -1,7 +1,11 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Build-Artefakte und den Cache
+.next
+
+# alle npm-Pakete und Abhängigkeiten, die für dein Projekt installiert wurden
 /node_modules
+
 /.pnp
 .pnp.*
 .yarn/*
