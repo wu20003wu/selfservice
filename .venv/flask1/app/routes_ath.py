@@ -2,10 +2,11 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, jwt_required
 import jwt
 import datetime
+from app.models import User
 
-bp = Blueprint('auth', __name__, url_prefix='')
+bp = Blueprint('ath', __name__, url_prefix='')
 
-@bp.route('/auth/login', methods=['POST'])
+@bp.route('/ath/login', methods=['POST'])
 def login():
     auth = request.get_json()
     username = auth['username']
@@ -22,29 +23,10 @@ def login():
 
 
 # Geschützte Route: Nur mit gültigem JWT-Token aufrufbar
-@bp.route("/auth/protected", methods=['GET'])
+@bp.route("/ath/protected", methods=['GET'])
 @jwt_required()
 def protected():
     # Der aktuelle Benutzer wird aus dem Token abgerufen
     current_user = get_jwt_identity()
     claims = get_jwt()
     return jsonify(logged_in_as=current_user, is_admin=claims.get("is_admin"), msg="Welcome to the protected route!"), 200
-
-
-
-
-
-
-
-
-
-
-
-
-# ... (innerhalb der Login-Funktion)
-token = jwt.encode({
-    'user': auth.get('username'),
-    'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30),
-    'is_admin': True  # Füge den is_admin-Anspruch hinzu, wenn der Benutzer ein Admin ist
-}, 'your-secret-key')
-# ...

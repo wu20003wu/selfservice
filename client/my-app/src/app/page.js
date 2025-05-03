@@ -100,71 +100,9 @@ export default function Home() {
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <button 
-        onClick={() => setShowModal(true)}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-      >
-        Neue Aufgabe erstellen
-      </button>
-
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Neue Aufgabe</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label className="block mb-2">Titel*</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full p-2 border rounded"
-                  value={newTask.title}
-                  onChange={(e) => setNewTask({...newTask, title: e.target.value})}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Beschreibung</label>
-                <textarea
-                  className="w-full p-2 border rounded"
-                  value={newTask.description}
-                  onChange={(e) => setNewTask({...newTask, description: e.target.value})}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-2">Status</label>
-                <select
-                  className="w-full p-2 border rounded"
-                  value={newTask.status}
-                  onChange={(e) => setNewTask({...newTask, status: e.target.value})}
-                >
-                  <option value="open">Offen</option>
-                  <option value="in progress">In Bearbeitung</option>
-                  <option value="done">Erledigt</option>
-                </select>
-              </div>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="px-4 py-2 text-gray-500 hover:text-gray-700"
-                >
-                  Abbrechen
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                  Erstellen
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start w-full max-w-6xl">
         {data && (
-          <div className="w-full max-w-4xl bg-white rounded-lg shadow-sm p-6">
+          <div className="w-full bg-white rounded-lg shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-semibold text-gray-800">Aufgaben Übersicht</h2>
               <span className="text-sm text-gray-500">{data.length} Aufgaben gesamt</span>
@@ -229,6 +167,48 @@ export default function Home() {
                       </td>
                     </tr>
                   ))}
+                  {/* Neue Eingabezeile */}
+                  <tr className="bg-blue-50 hover:bg-blue-100 transition-colors">
+                    <td className="px-4 py-2">
+                      <input
+                        type="text"
+                        required
+                        className="w-full p-2 border rounded bg-transparent"
+                        value={newTask.title}
+                        onChange={(e) => setNewTask({...newTask, title: e.target.value})}
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <textarea
+                        className="w-full p-2 border rounded bg-transparent"
+                        value={newTask.description}
+                        onChange={(e) => setNewTask({...newTask, description: e.target.value})}
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <select
+                        className="w-full p-2 border rounded bg-transparent"
+                        value={newTask.status}
+                        onChange={(e) => setNewTask({...newTask, status: e.target.value})}
+                      >
+                        <option value="open">Offen</option>
+                        <option value="in progress">In Bearbeitung</option>
+                        <option value="done">Erledigt</option>
+                      </select>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-500">
+                      {new Date().toLocaleDateString('de-DE')}
+                    </td>
+                    <td className="px-4 py-2 text-right">
+                      <button
+                        onClick={handleSubmit}
+                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                        disabled={!newTask.title}
+                      >
+                        Speichern
+                      </button>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
