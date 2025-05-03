@@ -7,6 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(225), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
     tasks = db.relationship("Task", back_populates="user")
 
 class Type(db.Model):

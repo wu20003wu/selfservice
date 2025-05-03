@@ -4,16 +4,16 @@ from app.extensions import db  # Korrekter Import der DB-Instanz
 from app.models import Task
 
 # Blueprint erstellen statt Flask-App
-bp = Blueprint('routes', __name__)
+bp = Blueprint('api', __name__, url_prefix='/api')
 
-@bp.route("/api/home", methods=['GET'])
+@bp.route("/home", methods=['GET'])
 def return_home():
     return jsonify({
         'message': "Hi, what's up?!",
         'people': ['kevin', 'kaize', 'wu']
     })
 
-@bp.route("/api/tasks", methods=['GET'])
+@bp.route("/tasks", methods=['GET'])
 def get_all_tasks():
     tasks = Task.query.all()
     # Immer ein Array zurückgeben, auch wenn leer
@@ -26,3 +26,4 @@ def get_all_tasks():
         'type': t.type.name if t.type else None,
         'user': t.user.username if t.user else None
     } for t in tasks]), 200
+

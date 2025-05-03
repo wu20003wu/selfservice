@@ -8,8 +8,9 @@ from datetime import timedelta
 from datetime import datetime
 import config  # Neu hinzugefügter Import
 from app.extensions import db  # ← Import von extensions
-import app.routes
-from app.routes import bp  # ← Blueprint importieren
+from app.routes_adm import bp as bp_adm
+from app.routes_api import bp as bp_api
+from app.routes_ath import bp as bp_ath
 
 # App-Instanz erstellen
 app = Flask(__name__)
@@ -33,7 +34,8 @@ with app.app_context():
     insert_sample_type()
     insert_sample_task()
 
-app.register_blueprint(bp)  # ← Blueprint registrieren
+for bp in (bp_api, bp_ath, bp_adm):
+    app.register_blueprint(bp)
 
 # Flask-Server starten
 if __name__ == '__main__':
