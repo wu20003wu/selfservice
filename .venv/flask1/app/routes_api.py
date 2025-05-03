@@ -50,6 +50,7 @@ def create_task():
             'title': new_task.title,
             'description': new_task.description,
             'status': new_task.status.name if new_task.status else None,
+            'type': new_task.type.name if new_task.type else None,
             'created_at': new_task.created_at.isoformat()
         }), 201
     except Exception as e:

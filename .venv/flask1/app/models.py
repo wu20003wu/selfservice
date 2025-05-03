@@ -41,7 +41,7 @@ def insert_sample_user():
     #sample user
     #only if no  any user exists
     if not User.query.first():
-        user = User(username="kevin", password="123456")
+        user = User(username="wu2003wu@hotmail.com", password="123456")
         db.session.add(user)
         db.session.commit()
 

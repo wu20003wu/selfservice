@@ -24,12 +24,6 @@ export default function RootLayout({ children }) {
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="md:pl-64 min-h-screen transition-[padding] duration-200 ease-in-out relative">
           <Sidebar />
-          <Link 
-            href="/login"
-            className="absolute top-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            Login
-          </Link>
           <main className="p-4 md:p-8">
             {children}
           </main>

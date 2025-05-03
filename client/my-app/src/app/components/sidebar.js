@@ -6,7 +6,8 @@ import { useState, useEffect } from 'react';
 export default function Sidebar() {
   const currentPath = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-
+  const [username, setUsername] = useState('');
+    
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
@@ -26,10 +27,21 @@ export default function Sidebar() {
     }
   }, [currentPath]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUsername(payload.sub);
+      }
+    }
+  }, []);
+
   const navItems = [
     { href: "/", label: "Tickets", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
     { href: "/selfservice", label: "Selfservice", icon: "M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" },
     { href: "/admin", label: "Admin", icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" },
+    { href: "/login", label: "Login", icon: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" },
   ];
 
   return (
@@ -72,6 +84,9 @@ export default function Sidebar() {
               </span>
             </Link>
           ))}
+          <div>
+            {username}
+          </div>
         </nav>
       </aside>
     </>

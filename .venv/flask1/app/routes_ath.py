@@ -17,7 +17,7 @@ def login():
     if user:
         additional_claims = {"is_admin": user.is_admin}
         access_token = create_access_token(identity=user.username, additional_claims=additional_claims)
-        return jsonify(access_token=access_token), 200
+        return jsonify(access_token=access_token, username=user.username), 200
     else:
         return jsonify({"msg": "Invalid credentials"}), 401
 
