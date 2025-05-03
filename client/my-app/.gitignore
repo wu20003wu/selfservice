@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Build-Artefakte und den Cache
-/.next
+.next
 
 # alle npm-Pakete und Abhängigkeiten, die für dein Projekt installiert wurden
 /node_modules
